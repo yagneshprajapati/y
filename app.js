@@ -4,7 +4,7 @@ const keypress = require('keypress');
 const readlineSync = require('readline-sync');
 const crypto = require('crypto');
 
-const repoURL = 'git@github.com:yagubhai/shop.git';
+const repoURL = 'git@github.com:yagneshprajapati/ty-project.git';
 
 function installNpmPackage(packageName) {
     try {
