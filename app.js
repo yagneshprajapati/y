@@ -3,7 +3,7 @@ const readlineSync = require('readline-sync');
 const keypress = require('keypress');
 
 async function shouldIgnoreDirectory(directory) {
-    return directory.startsWith('in_');
+    return directory.startsWith('ig_');
 }
 
 async function setupAutomaticSync() {
