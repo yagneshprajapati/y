@@ -3,8 +3,10 @@ const readlineSync = require('readline-sync');
 const keypress = require('keypress');
 
 async function setupAutomaticSync() {
-    const repoURL = 'https://github.com/yagneshprajapati/y.git'; 
-    const localRepoPath = '.'; 
+    const repoURL = 'https://github.com/yagneshprajapati/y.git';
+    const localRepoPath = '.';
+    let fetchMessage = '';
+    let pushMessage = '';
 
     console.log('Automatic sync initiated. Press Ctrl+C to exit.');
 
@@ -16,9 +18,9 @@ async function setupAutomaticSync() {
             // Fetch operation
             try {
                 execSync(`git -C ${localRepoPath} fetch origin`, { stdio: 'inherit' });
-                console.log('Fetch successful.');
+                fetchMessage = 'Fetch successful.';
             } catch (error) {
-                console.error(`Error during fetch: ${error.message}`);
+                fetchMessage = `Error during fetch: ${error.message}`;
             }
         } else if (key && key.ctrl && key.name === 's') {
             // Push operation
@@ -28,20 +30,34 @@ async function setupAutomaticSync() {
                 if (status.toString().trim() !== '') {
                     // There are changes, so commit and push
                     execSync(`git -C ${localRepoPath} add -A && git -C ${localRepoPath} commit -m "Automatic commit" && git -C ${localRepoPath} push ${repoURL} main`, { stdio: 'inherit' });
-                    console.log('Push successful.');
+                    pushMessage = 'Push successful.';
                 } else {
-                    console.log('No changes to push.');
+                    pushMessage = 'No changes to push.';
                 }
             } catch (error) {
-                console.error(`Error during push: ${error.message}`);
+                pushMessage = `Error during push: ${error.message}`;
             }
         }
+        printMessages(fetchMessage, pushMessage);
     });
 
     process.stdin.setRawMode(true);
     process.stdin.resume();
 
+    setInterval(() => {
+        fetchMessage = '';
+        pushMessage = '';
+        printMessages(fetchMessage, pushMessage);
+    }, 5000); // Clear messages every 5 seconds
+
     setInterval(() => {}, 2000); // Keep the script running
+}
+
+function printMessages(fetchMessage, pushMessage) {
+    console.clear();
+    console.log('Automatic sync initiated. Press Ctrl+C to exit.\n');
+    console.log(fetchMessage);
+    console.log(pushMessage);
 }
 
 async function main() {
@@ -51,5 +67,7 @@ async function main() {
         console.error(`Error: ${error.message}`);
     }
 }
+
+
 
 main();
