@@ -3,8 +3,8 @@ const readlineSync = require('readline-sync');
 const keypress = require('keypress');
 
 async function setupAutomaticSync() {
-    const repoURL = 'https://github.com/yagneshprajapati/y.git';
-    const localRepoPath = '.';
+    const repoURL = 'https://github.com/yagneshprajapati/y.git'; 
+    const localRepoPath = '.'; 
 
     console.log('Automatic sync initiated. Press Ctrl+C to exit.');
 
@@ -34,14 +34,6 @@ async function setupAutomaticSync() {
                 }
             } catch (error) {
                 console.error(`Error during push: ${error.message}`);
-            }
-        } else if (key && key.ctrl && key.name === 't') {
-            // Fetch operation triggered by Ctrl + t
-            try {
-                execSync(`git -C ${localRepoPath} fetch origin`, { stdio: 'inherit' });
-                console.log('Fetch successful.');
-            } catch (error) {
-                console.error(`Error during fetch: ${error.message}`);
             }
         }
     });
