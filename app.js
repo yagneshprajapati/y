@@ -1,16 +1,9 @@
 const { execSync } = require('child_process');
 const readlineSync = require('readline-sync');
 
-async function login() {
-    const username = readlineSync.question('Enter your GitHub username: ');
-    const password = readlineSync.question('Enter your GitHub password: ', { hideEchoBack: true });
-    const credentials = `${username}:${password}`;
-    return Buffer.from(credentials).toString('base64');
-}
-
 async function setupAutomaticSync() {
-    const repoURL = readlineSync.question('Enter the GitHub repository URL: ');
-    const localRepoPath = readlineSync.question('Enter the local repository path: ');
+    const repoURL = 'https://github.com/yagneshprajapati/y.git'; // Your GitHub repository URL
+    const localRepoPath = '.'; // Always current directory
 
     console.log('Automatic sync initiated. Press Ctrl+C to exit.');
 
@@ -25,7 +18,7 @@ async function setupAutomaticSync() {
 
     setInterval(async () => {
         try {
-            execSync(`git -C ${localRepoPath} add -A && git -C ${localRepoPath} commit -m "Automatic commit" && git -C ${localRepoPath} push origin main`, { stdio: 'inherit' });
+            execSync(`git -C ${localRepoPath} add -A && git -C ${localRepoPath} commit -m "Automatic commit" && git -C ${localRepoPath} push ${repoURL} main`, { stdio: 'inherit' });
             console.log('Push successful.');
         } catch (error) {
             console.error(`Error during push: ${error.message}`);
