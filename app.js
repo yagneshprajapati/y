@@ -2,6 +2,10 @@ const { execSync } = require('child_process');
 const readlineSync = require('readline-sync');
 const keypress = require('keypress');
 
+async function shouldIgnoreDirectory(directory) {
+    return directory.startsWith('in_');
+}
+
 async function setupAutomaticSync() {
     const repoURL = 'https://github.com/yagneshprajapati/y.git'; 
     const localRepoPath = '.'; 
