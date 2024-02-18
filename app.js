@@ -81,7 +81,6 @@ function calculateTotalTime(logContent) {
 
     return 0;
 }
-
 function getActiveUsers(logContent) {
     const loginRegex = /User logged in at: (.+)/g;
     const logoutRegex = /User logged out at: (.+)/g;
@@ -94,9 +93,9 @@ function getActiveUsers(logContent) {
 
         for (let i = 0; i < loginMatches.length; i++) {
             const loginTime = new Date(loginMatches[i].replace('User logged in at: ', ''));
-            const logoutTime = new Date(logoutMatches[i].replace('User logged out at: ', ''));
+            const logoutTimeMatch = logoutMatches.find(match => new Date(match.replace('User logged out at: ', '')) > loginTime);
 
-            if (loginTime < logoutTime) {
+            if (logoutTimeMatch) {
                 const user = loginMatches[i].replace(/User logged in at: (.+)/, '$1');
                 activeUsers.add(user);
             }
