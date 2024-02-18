@@ -53,7 +53,7 @@ async function pullFromRemote(repoPath, isManualPull = false) {
     try {
         execSync(`git -C ${repoPath} pull origin main`, { stdio: 'ignore' });
         if (isManualPull) {
-            console.log('Pull successful.');
+            console.log('Take successful');
         }
     } catch (error) {
         console.error(`Error during pull: ${error.message}`);
@@ -71,8 +71,8 @@ async function setupAutomaticSync() {
     console.log('GITHUB TOOL (TY PROJECT) Y S B V \n');
 
     console.log('Press Ctrl+C to exit. \n');
-    console.log('Press Ctrl+A to recieve. \n');
-    console.log('Press Ctrl+S to send. \n');
+    console.log('Press Ctrl+A to Take. \n');
+    console.log('Press Ctrl+S to Give. \n');
     keypress(process.stdin);
     process.stdin.on('keypress', async (ch, key) => {
         if (key && key.ctrl && key.name === 'c') {
@@ -90,7 +90,7 @@ async function setupAutomaticSync() {
                 const status = execSync(`git -C ${repoPath} status -s`);
                 if (status.toString().trim() !== '') {
                     execSync(`git -C ${repoPath} add -A && git -C ${repoPath} commit -m "Auto commit" && git -C ${repoPath} push origin main`, { stdio: 'ignore' });
-                    console.log('Push successful ');
+                    console.log('Give successful ');
                     console.log(' ');
                 } else {
                     console.log('No changes to push');
