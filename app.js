@@ -91,10 +91,6 @@ async function setupAutomaticSync() {
                     // There are changes, so commit and push
                     execSync(`git -C ${repoPath} add -A && git -C ${repoPath} commit -m "Automatic commit" && git -C ${repoPath} push origin main`, { stdio: 'inherit' });
                     console.log('\nPush successful.');
-
-                    // Display information about the last commit
-                    const lastCommitInfo = execSync(`git -C ${repoPath} log -1 --pretty=format:"%h %an %ad %s" --date=local`);
-                    console.log(`Last Commit: ${lastCommitInfo.toString().trim()}`);
                 } else {
                     console.log('\nNo changes to push.');
                 }
