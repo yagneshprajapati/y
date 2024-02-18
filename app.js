@@ -80,7 +80,7 @@ async function setupAutomaticSync() {
         } else if (key && key.ctrl && key.name === 'a') {
             try {
                 await pullFromRemote(repoPath, true);
-                console.log('Repository is up to date.');
+                console.log('');
             } catch (error) {
                 console.error(`Error during pull: ${error.message}`);
             }
