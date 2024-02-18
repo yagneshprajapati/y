@@ -1,17 +1,66 @@
+const crypto = require('crypto');
+const fs = require('fs');
 const colors = require('colors');
 const { execSync } = require('child_process');
 const readlineSync = require('readline-sync');
 const keypress = require('keypress');
 
+const logFilePath = 'log';
+const encryptionKey = 'your_encryption_key'; // Replace with a strong key
+
+function encrypt(text) {
+    const cipher = crypto.createCipher('aes-256-cbc', encryptionKey);
+    let encrypted = cipher.update(text, 'utf8', 'hex');
+    encrypted += cipher.final('hex');
+    return encrypted;
+}
+
+function decrypt(encryptedText) {
+    const decipher = crypto.createDecipher('aes-256-cbc', encryptionKey);
+    let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+    return decrypted;
+}
+
+function writeLog(log) {
+    try {
+        const encryptedLog = encrypt(log);
+        fs.writeFileSync(logFilePath, encryptedLog);
+    } catch (error) {
+        console.error(`Error writing log: ${error.message}`.red);
+    }
+}
+
+function readLog() {
+    try {
+        const encryptedLog = fs.readFileSync(logFilePath, 'utf8');
+        const decryptedLog = decrypt(encryptedLog);
+        return decryptedLog;
+    } catch (error) {
+        console.error(`Error reading log: ${error.message}`.red);
+        return '';
+    }
+}
+
 async function setupAutomaticSync() {
     const repoURL = 'https://github.com/yagneshprajapati/y.git';
     const localRepoPath = '.';
+
+    // Log user login time
+    const loginTime = new Date().toLocaleString();
+    const loginLog = `User logged in at: ${loginTime}\n`;
+    writeLog(loginLog);
 
     console.log('Automatic sync initiated. Press Ctrl+C to exit.');
 
     keypress(process.stdin);
     process.stdin.on('keypress', (ch, key) => {
         if (key && key.ctrl && key.name === 'c') {
+            // Log user logout time
+            const logoutTime = new Date().toLocaleString();
+            const logoutLog = `User logged out at: ${logoutTime}\n`;
+            writeLog(logoutLog);
+
             process.exit();
         } else if (key && key.ctrl && key.name === 'a') {
             // Fetch operation
@@ -39,6 +88,25 @@ async function setupAutomaticSync() {
                 }
             } catch (error) {
                 console.error(`Error during push: ${error.message}`.red);
+            }
+        } else if (key && key.ctrl && key.name === 't') {
+            // Fetch operation triggered by Ctrl + t
+            try {
+                execSync(`git -C ${localRepoPath} fetch origin`, { stdio: 'inherit' });
+                console.log('Fetch successful.'.green);
+            } catch (error) {
+                console.error(`Error during fetch: ${error.message}`.red);
+            }
+        } else if (key && key.ctrl && key.name === 'o') {
+            const passkey = readlineSync.question('Enter passkey: ', {
+                hideEchoBack: true,
+            });
+
+            if (passkey === 'SHOWME') {
+                const logContent = readLog();
+                console.log(`\nLog:\n${logContent}`);
+            } else {
+                console.log('Invalid passkey. Access denied.'.red);
             }
         }
     });

@@ -3,6 +3,7 @@
     "chalk": "^4.1.0",
     "clui": "^0.3.6",
     "colors": "^1.4.0",
+    "crypto": "^1.0.1",
     "keypress": "^0.2.1",
     "ora": "^8.0.1",
     "readline-sync": "^1.4.10"
