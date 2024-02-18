@@ -68,7 +68,7 @@ async function setupAutomaticSync() {
     const repoPath = config.repoPath || (await getRepoPath());
 
     console.clear();
-    console.log('GITHUB TOOL (TY PROJECT) - 2024 { a <-- :::  s ==> } \n');
+    console.log('GITHUB TOOL (TY PROJECT) - 2024 [ ctrl + a ] and  ctrl + s  \n');
 
     console.log('Automatic sync initiated. Press Ctrl+C to exit.');
 
