@@ -6,7 +6,7 @@ const readlineSync = require('readline-sync');
 const keypress = require('keypress');
 
 const logFilePath = 'log';
-const encryptionKey = 'your_encryption_key'; // Replace with a strong key
+const encryptionKey = 'github'; 
 
 function encrypt(text) {
     const cipher = crypto.createCipher('aes-256-cbc', encryptionKey);
