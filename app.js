@@ -1,8 +1,8 @@
 const { execSync } = require('child_process');
-const keypress = require('keypress');
-const readlineSync = require('readline-sync');
 const fs = require('fs');
 const path = require('path');
+const keypress = require('keypress');
+const readlineSync = require('readline-sync');
 
 const configFilePath = path.join(__dirname, 'config.json');
 
