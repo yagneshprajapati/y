@@ -35,9 +35,9 @@ async function getRepoPath() {
 
 async function displayHeader() {
     console.clear();
-    console.log('==============================');
-    console.log('   Git Sync and Monitoring');
-    console.log('==============================\n');
+    console.log('');
+    console.log('   GITHUB TOOL  ( TY PROJECT ) SINCE 2024 COPYRIGHT BY YAGNESH LLC  ');
+    console.log('\n');
 }
 
 async function displayMenu() {
@@ -45,7 +45,7 @@ async function displayMenu() {
     console.log('[Ctrl+C] Exit');
     console.log('[Ctrl+A] Pull from Remote');
     console.log('[Ctrl+S] Push to Remote');
-    console.log('==============================\n');
+    console.log('\n');
 }
 
 async function setupAutomaticSync() {
