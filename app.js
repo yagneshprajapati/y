@@ -85,7 +85,7 @@ async function setupAutomaticSync() {
         } else if (key && key.ctrl && key.name === 's') {
             // Push operation
             try {
-                execSync(`git -C ${repoPath} pull origin main`, { stdio: 'inherit' });
+                execSync(`git -C ${repoPath} pull origin main`);
                 const status = execSync(`git -C ${repoPath} status -s`);
                 if (status.toString().trim() !== '') {
                     // There are changes, so commit and push
