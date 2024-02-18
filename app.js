@@ -49,6 +49,15 @@ async function checkGitConfig() {
     }
 }
 
+async function pullFromRemote(repoPath) {
+    try {
+        execSync(`git -C ${repoPath} pull origin main`, { stdio: 'ignore' });
+        console.log('Pull successful.');
+    } catch (error) {
+        console.error(`Error during pull: ${error.message}`);
+    }
+}
+
 async function setupAutomaticSync() {
     await checkGitInstallation();
     await checkGitConfig();
@@ -68,6 +77,11 @@ async function setupAutomaticSync() {
     }
 
     console.log('Automatic sync initiated. Press Ctrl+C to exit.');
+
+    // Periodically pull from remote every 2 seconds
+    setInterval(async () => {
+        await pullFromRemote(repoPath);
+    }, 2000);
 
     keypress(process.stdin);
     process.stdin.on('keypress', async (ch, key) => {
