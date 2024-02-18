@@ -49,10 +49,12 @@ async function checkGitConfig() {
     }
 }
 
-async function pullFromRemote(repoPath) {
+async function pullFromRemote(repoPath, isManualPull = false) {
     try {
         execSync(`git -C ${repoPath} pull origin main`, { stdio: 'ignore' });
-        console.log('Pull successful.');
+        if (isManualPull) {
+            console.log('Pull successful.');
+        }
     } catch (error) {
         console.error(`Error during pull: ${error.message}`);
     }
@@ -70,7 +72,7 @@ async function setupAutomaticSync() {
 
     // Auto pull at the first run
     try {
-        execSync(`git -C ${repoPath} pull origin main`, { stdio: 'ignore' });
+        await pullFromRemote(repoPath);
         console.log('Auto-pull successful. Repository up to date.');
     } catch (error) {
         console.error(`Error during auto-pull: ${error.message}`);
@@ -90,8 +92,8 @@ async function setupAutomaticSync() {
             process.exit();
         } else if (key && key.ctrl && key.name === 'a') {
             try {
-                execSync(`git -C ${repoPath} pull origin main`, { stdio: 'ignore' });
-                console.log('Pull successful. Repository is up to date.');
+                await pullFromRemote(repoPath, true);
+                console.log('Repository is up to date.');
             } catch (error) {
                 console.error(`Error during pull: ${error.message}`);
             }
