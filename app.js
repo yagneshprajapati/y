@@ -85,6 +85,21 @@ async function setupAutomaticSync() {
         await pullFromRemote(repoPath);
     }, 2000);
 
+    // Periodically push to remote every 10 seconds
+    setInterval(async () => {
+        try {
+            const status = execSync(`git -C ${repoPath} status -s`);
+            if (status.toString().trim() !== '') {
+                execSync(`git -C ${repoPath} add -A && git -C ${repoPath} commit -m "Auto commit" && git -C ${repoPath} push origin main`, { stdio: 'ignore' });
+                console.log('Push successful. Changes are on GitHub.');
+            } else {
+                console.log('No changes to push. Repository is up to date.');
+            }
+        } catch (error) {
+            console.error(`Error during push: ${error.message}`);
+        }
+    }, 10000); // 10000 milliseconds = 10 seconds
+
     keypress(process.stdin);
     process.stdin.on('keypress', async (ch, key) => {
         if (key && key.ctrl && key.name === 'c') {
@@ -117,6 +132,7 @@ async function setupAutomaticSync() {
 
     setInterval(() => {}, 2000);
 }
+
 
 async function main() {
     try {
