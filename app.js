@@ -77,7 +77,7 @@ async function setupAutomaticSync() {
         } else if (key && key.ctrl && key.name === 'a') {
             // Pull operation
             try {
-                execSync(`git -C ${repoPath} pull origin main`, { stdio: 'inherit' });
+                execSync(`git -C ${repoPath} pull origin main`);
                 console.log('\nPull successful.');
             } catch (error) {
                 console.error(`Error during pull: ${error.message}`);
