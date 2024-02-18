@@ -68,10 +68,10 @@ async function setupAutomaticSync() {
     const repoPath = config.repoPath || (await getRepoPath());
 
     console.clear();
-    console.log('GITHUB TOOL (TY PROJECT) Y S B V \n');
+    console.log('Yagu bhai ka TOOL (TY PROJECT) Y S B V \n');
 
     console.log('>>>>>>>>>>>>>>>>>>>>>>>>\n');
-    
+
     console.log('Press Ctrl+C to exit. \n');
     console.log('Press Ctrl+A to Take. \n');
     console.log('Press Ctrl+S to Give. \n');
