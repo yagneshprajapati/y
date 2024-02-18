@@ -90,7 +90,7 @@ async function setupAutomaticSync() {
                 const status = execSync(`git -C ${repoPath} status -s`);
                 if (status.toString().trim() !== '') {
                     execSync(`git -C ${repoPath} add -A && git -C ${repoPath} commit -m "Auto commit" && git -C ${repoPath} push origin main`, { stdio: 'ignore' });
-                    console.log('Push successful');
+                    console.log('Push successful ');
                 } else {
                     console.log('No changes to push');
                 }
