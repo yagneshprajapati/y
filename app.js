@@ -1,10 +1,11 @@
+const colors = require('colors');
 const { execSync } = require('child_process');
 const readlineSync = require('readline-sync');
 const keypress = require('keypress');
 
 async function setupAutomaticSync() {
-    const repoURL = 'https://github.com/yagneshprajapati/y.git'; 
-    const localRepoPath = '.'; 
+    const repoURL = 'https://github.com/yagneshprajapati/y.git';
+    const localRepoPath = '.';
 
     console.log('Automatic sync initiated. Press Ctrl+C to exit.');
 
@@ -16,9 +17,9 @@ async function setupAutomaticSync() {
             // Fetch operation
             try {
                 execSync(`git -C ${localRepoPath} fetch origin`, { stdio: 'inherit' });
-                console.log('Fetch successful.');
+                console.log('Fetch successful.'.green);
             } catch (error) {
-                console.error(`Error during fetch: ${error.message}`);
+                console.error(`Error during fetch: ${error.message}`.red);
             }
         } else if (key && key.ctrl && key.name === 's') {
             // Push operation
@@ -28,12 +29,16 @@ async function setupAutomaticSync() {
                 if (status.toString().trim() !== '') {
                     // There are changes, so commit and push
                     execSync(`git -C ${localRepoPath} add -A && git -C ${localRepoPath} commit -m "Automatic commit" && git -C ${localRepoPath} push ${repoURL} main`, { stdio: 'inherit' });
-                    console.log('Push successful.');
+                    console.log('Push successful.'.green);
+
+                    // Display information about the last commit
+                    const lastCommitInfo = execSync(`git -C ${localRepoPath} log -1 --pretty=format:"%h %an %ad %s" --date=local`);
+                    console.log(`Last Commit: ${lastCommitInfo.toString().trim()}`.yellow);
                 } else {
-                    console.log('No changes to push.');
+                    console.log('No changes to push.'.yellow);
                 }
             } catch (error) {
-                console.error(`Error during push: ${error.message}`);
+                console.error(`Error during push: ${error.message}`.red);
             }
         }
     });
@@ -48,7 +53,7 @@ async function main() {
     try {
         await setupAutomaticSync();
     } catch (error) {
-        console.error(`Error: ${error.message}`);
+        console.error(`Error: ${error.message}`.red);
     }
 }
 
