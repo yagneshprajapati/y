@@ -68,10 +68,11 @@ async function setupAutomaticSync() {
     const repoPath = config.repoPath || (await getRepoPath());
 
     console.clear();
-    console.log('GITHUB TOOL (TY PROJECT) - 2024 [ ctrl + a ] and  ctrl + s  \n');
+    console.log('GITHUB TOOL (TY PROJECT) Y S B V \n');
 
-    console.log('Automatic sync initiated. Press Ctrl+C to exit.');
-
+    console.log('Press Ctrl+C to exit. \n');
+    console.log('Press Ctrl+A to recieve. \n');
+    console.log('Press Ctrl+S to send. \n');
     keypress(process.stdin);
     process.stdin.on('keypress', async (ch, key) => {
         if (key && key.ctrl && key.name === 'c') {
