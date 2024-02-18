@@ -83,7 +83,6 @@ async function setupAutomaticSync() {
             }
         } else if (key && key.ctrl && key.name === 's') {
             try {
-                execSync(`git -C ${repoPath} pull origin main`, { stdio: 'ignore' });
                 const status = execSync(`git -C ${repoPath} status -s`);
                 if (status.toString().trim() !== '') {
                     execSync(`git -C ${repoPath} add -A && git -C ${repoPath} commit -m "Auto commit" && git -C ${repoPath} push origin main`, { stdio: 'ignore' });
