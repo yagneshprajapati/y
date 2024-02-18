@@ -77,7 +77,7 @@ async function setupAutomaticSync() {
         } else if (key && key.ctrl && key.name === 'a') {
             // Pull operation
             try {
-                execSync(`git -C ${repoPath} pull origin main`);
+                execSync(`git -C ${repoPath} pull origin main`, { stdio: 'pipe' });
                 console.log('\nPull successful.');
             } catch (error) {
                 console.error(`Error during pull: ${error.message}`);
@@ -85,15 +85,8 @@ async function setupAutomaticSync() {
         } else if (key && key.ctrl && key.name === 's') {
             // Push operation
             try {
-                execSync(`git -C ${repoPath} pull origin main`);
-                const status = execSync(`git -C ${repoPath} status -s`);
-                if (status.toString().trim() !== '') {
-                    // There are changes, so commit and push
-                    execSync(`git -C ${repoPath} add -A && git -C ${repoPath} commit -m "Automatic commit" && git -C ${repoPath} push origin main`, { stdio: 'inherit' });
-                    console.log('\nPush successful.');
-                } else {
-                    console.log('\nNo changes to push.');
-                }
+                execSync(`git -C ${repoPath} push origin main`, { stdio: 'pipe' });
+                console.log('\nPush successful.');
             } catch (error) {
                 console.error(`Error during push: ${error.message}`);
             }
