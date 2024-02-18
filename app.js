@@ -36,15 +36,15 @@ async function getRepoPath() {
 async function displayHeader() {
     console.clear();
     console.log('');
-    console.log('   GITHUB TOOL  ( TY PROJECT ) SINCE 2024 COPYRIGHT BY YAGNESH LLC  ');
+    console.log('   GITHUB TOOL  ( TY PROJECT ) 2024 YAGNESH LLC  ');
     console.log('\n');
 }
 
 async function displayMenu() {
     console.log('Menu:');
     console.log('[Ctrl+C] Exit');
-    console.log('[Ctrl+A] Pull from Remote');
-    console.log('[Ctrl+S] Push to Remote');
+    console.log('[Ctrl+A] Pull from GitHub');
+    console.log('[Ctrl+S] Push to GitHub');
     console.log('\n');
 }
 
@@ -52,7 +52,7 @@ async function checkGitInstallation() {
     try {
         execSync('git --version', { stdio: 'ignore' });
     } catch (error) {
-        console.error('Git is not installed. Please install Git and try again.');
+        console.error('Git is not installed. Install Git and try again.');
         process.exit(1);
     }
 }
@@ -62,7 +62,7 @@ async function checkGitConfig() {
         execSync('git config --get user.name', { stdio: 'ignore' });
         execSync('git config --get user.email', { stdio: 'ignore' });
     } catch (error) {
-        console.error('Git is not configured. Please configure Git with your username and email.');
+        console.error('Git is not configured. Configure Git with your username and email.');
         process.exit(1);
     }
 }
@@ -85,7 +85,7 @@ async function setupAutomaticSync() {
         console.error(`Error during auto-pull: ${error.message}`);
     }
 
-    console.log('\nAutomatic sync initiated. Press Ctrl+C to exit.');
+    console.log('\nAuto-sync on. Press Ctrl+C to exit.');
 
     keypress(process.stdin);
     process.stdin.on('keypress', async (ch, key) => {
@@ -94,13 +94,13 @@ async function setupAutomaticSync() {
 
         if (key && key.ctrl && key.name === 'c') {
             // Exit
-            console.log('Exiting... Thank you for using the GitHub Tool.');
+            console.log('Exiting. Thank you!');
             process.exit();
         } else if (key && key.ctrl && key.name === 'a') {
             // Pull operation
             try {
                 execSync(`git -C ${repoPath} pull origin main`, { stdio: 'inherit' });
-                console.log('\nPull successful. Your repository is now up to date.');
+                console.log('\nPull successful. Repository is up to date.');
             } catch (error) {
                 console.error(`Error during pull: ${error.message}`);
             }
@@ -110,11 +110,11 @@ async function setupAutomaticSync() {
                 execSync(`git -C ${repoPath} pull origin main`, { stdio: 'inherit' });
                 const status = execSync(`git -C ${repoPath} status -s`);
                 if (status.toString().trim() !== '') {
-                    // There are changes, so commit and push
-                    execSync(`git -C ${repoPath} add -A && git -C ${repoPath} commit -m "Automatic commit" && git -C ${repoPath} push origin main`, { stdio: 'inherit' });
-                    console.log('\nPush successful. Your changes are now on GitHub.');
+                    // Changes, so commit and push
+                    execSync(`git -C ${repoPath} add -A && git -C ${repoPath} commit -m "Auto commit" && git -C ${repoPath} push origin main`, { stdio: 'inherit' });
+                    console.log('\nPush successful. Changes on GitHub.');
                 } else {
-                    console.log('\nNo changes to push. Your repository is already up to date.');
+                    console.log('\nNo changes to push. Repository is up to date.');
                 }
             } catch (error) {
                 console.error(`Error during push: ${error.message}`);
@@ -125,7 +125,7 @@ async function setupAutomaticSync() {
     process.stdin.setRawMode(true);
     process.stdin.resume();
 
-    setInterval(() => {}, 2000); // Keep the script running
+    setInterval(() => {}, 2000); // Keep running
 }
 
 async function main() {
