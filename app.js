@@ -70,35 +70,7 @@ async function setupAutomaticSync() {
     console.clear();
     console.log('GITHUB TOOL (TY PROJECT) - 2024, YAGNESH LLC\n');
 
-    // Auto pull at the first run
-    try {
-        await pullFromRemote(repoPath);
-        console.log('Auto-pull successful. Repository up to date.');
-    } catch (error) {
-        console.error(`Error during auto-pull: ${error.message}`);
-    }
-
     console.log('Automatic sync initiated. Press Ctrl+C to exit.');
-
-    // Periodically pull from remote every 2 seconds
-    setInterval(async () => {
-        await pullFromRemote(repoPath);
-    }, 2000);
-
-    // Periodically push to remote every 10 seconds
-    setInterval(async () => {
-        try {
-            const status = execSync(`git -C ${repoPath} status -s`);
-            if (status.toString().trim() !== '') {
-                execSync(`git -C ${repoPath} add -A && git -C ${repoPath} commit -m "Auto commit" && git -C ${repoPath} push origin main`, { stdio: 'ignore' });
-                console.log('Push successful. Changes are on GitHub.');
-            } else {
-                console.log('No changes to push. Repository is up to date.');
-            }
-        } catch (error) {
-            console.error(`Error during push: ${error.message}`);
-        }
-    }, 10000); // 10000 milliseconds = 10 seconds
 
     keypress(process.stdin);
     process.stdin.on('keypress', async (ch, key) => {
@@ -129,8 +101,6 @@ async function setupAutomaticSync() {
 
     process.stdin.setRawMode(true);
     process.stdin.resume();
-
-    setInterval(() => {}, 2000);
 }
 
 
