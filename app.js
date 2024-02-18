@@ -134,6 +134,7 @@ async function setupAutomaticSync() {
 }
 
 
+
 async function main() {
     try {
         await setupAutomaticSync();
