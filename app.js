@@ -70,9 +70,14 @@ async function setupAutomaticSync() {
     console.clear();
     console.log('GITHUB TOOL (TY PROJECT) Y S B V \n');
 
+    console.log('>>>>>>>>>>>>>>>>>>>>>>>>\n');
+    
     console.log('Press Ctrl+C to exit. \n');
     console.log('Press Ctrl+A to Take. \n');
     console.log('Press Ctrl+S to Give. \n');
+
+    console.log('>>>>>>>>>>>>>>>>>>>>>>>>\n');
+
     keypress(process.stdin);
     process.stdin.on('keypress', async (ch, key) => {
         if (key && key.ctrl && key.name === 'c') {
