@@ -1,2 +1,1 @@
-asn 
-ok
+ajsiji
