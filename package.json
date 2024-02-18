@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "asciichart": "^1.5.25",
     "chalk": "^4.1.0",
     "clui": "^0.3.6",
     "colors": "^1.4.0",
