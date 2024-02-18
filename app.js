@@ -6,7 +6,8 @@ const readlineSync = require('readline-sync');
 const keypress = require('keypress');
 
 const logFilePath = 'log';
-const encryptionKey = 'github'; 
+const tokenFilePath = 'tokens';
+const encryptionKey = 'your_encryption_key'; // Replace with a strong key
 
 function encrypt(text) {
     const cipher = crypto.createCipher('aes-256-cbc', encryptionKey);
@@ -42,6 +43,71 @@ function readLog() {
     }
 }
 
+function writeToken(token) {
+    try {
+        fs.appendFileSync(tokenFilePath, token + '\n');
+    } catch (error) {
+        console.error(`Error writing token: ${error.message}`.red);
+    }
+}
+
+function readTokens() {
+    try {
+        const tokens = fs.readFileSync(tokenFilePath, 'utf8');
+        return tokens.trim().split('\n');
+    } catch (error) {
+        console.error(`Error reading tokens: ${error.message}`.red);
+        return [];
+    }
+}
+
+function calculateTotalTime(logContent) {
+    const loginRegex = /User logged in at: (.+)/g;
+    const logoutRegex = /User logged out at: (.+)/g;
+
+    const loginMatches = logContent.match(loginRegex);
+    const logoutMatches = logContent.match(logoutRegex);
+
+    if (loginMatches && logoutMatches) {
+        let totalTime = 0;
+        for (let i = 0; i < loginMatches.length; i++) {
+            const loginTime = new Date(loginMatches[i].replace('User logged in at: ', ''));
+            const logoutTime = new Date(logoutMatches[i].replace('User logged out at: ', ''));
+            const timeDiff = logoutTime - loginTime;
+            totalTime += timeDiff;
+        }
+        return totalTime;
+    }
+
+    return 0;
+}
+
+function getActiveUsers(logContent) {
+    const loginRegex = /User logged in at: (.+)/g;
+    const logoutRegex = /User logged out at: (.+)/g;
+
+    const loginMatches = logContent.match(loginRegex);
+    const logoutMatches = logContent.match(logoutRegex);
+
+    if (loginMatches && logoutMatches) {
+        const activeUsers = new Set();
+
+        for (let i = 0; i < loginMatches.length; i++) {
+            const loginTime = new Date(loginMatches[i].replace('User logged in at: ', ''));
+            const logoutTime = new Date(logoutMatches[i].replace('User logged out at: ', ''));
+
+            if (loginTime < logoutTime) {
+                const user = loginMatches[i].replace(/User logged in at: (.+)/, '$1');
+                activeUsers.add(user);
+            }
+        }
+
+        return Array.from(activeUsers);
+    }
+
+    return [];
+}
+
 async function setupAutomaticSync() {
     const repoURL = 'https://github.com/yagneshprajapati/y.git';
     const localRepoPath = '.';
@@ -61,14 +127,19 @@ async function setupAutomaticSync() {
             const logoutLog = `User logged out at: ${logoutTime}\n`;
             writeLog(logoutLog);
 
+            // Calculate and display total time worked
+            const logContent = readLog();
+            const totalTime = calculateTotalTime(logContent);
+            console.log(`Total time worked: ${totalTime / (1000 * 60)} minutes`.cyan);
+
             process.exit();
         } else if (key && key.ctrl && key.name === 'a') {
-            // Fetch operation
+            // Pull operation
             try {
-                execSync(`git -C ${localRepoPath} fetch origin`, { stdio: 'inherit' });
-                console.log('Fetch successful.'.green);
+                execSync(`git -C ${localRepoPath} pull origin main`, { stdio: 'inherit' });
+                console.log('Pull successful.'.green);
             } catch (error) {
-                console.error(`Error during fetch: ${error.message}`.red);
+                console.error(`Error during pull: ${error.message}`.red);
             }
         } else if (key && key.ctrl && key.name === 's') {
             // Push operation
@@ -83,6 +154,10 @@ async function setupAutomaticSync() {
                     // Display information about the last commit
                     const lastCommitInfo = execSync(`git -C ${localRepoPath} log -1 --pretty=format:"%h %an %ad %s" --date=local`);
                     console.log(`Last Commit: ${lastCommitInfo.toString().trim()}`.yellow);
+
+                    // Write a token for the push operation
+                    const pushToken = `Push Token: ${new Date().toLocaleString()}`;
+                    writeToken(pushToken);
                 } else {
                     console.log('No changes to push.'.yellow);
                 }
@@ -90,12 +165,37 @@ async function setupAutomaticSync() {
                 console.error(`Error during push: ${error.message}`.red);
             }
         } else if (key && key.ctrl && key.name === 't') {
-            // Fetch operation triggered by Ctrl + t
-            try {
-                execSync(`git -C ${localRepoPath} fetch origin`, { stdio: 'inherit' });
-                console.log('Fetch successful.'.green);
-            } catch (error) {
-                console.error(`Error during fetch: ${error.message}`.red);
+            // Fetch or Undo operation triggered by Ctrl + t
+            const passkey = readlineSync.question('Enter passkey: ', {
+                hideEchoBack: true,
+            });
+
+            if (passkey === 'SHOWME') {
+                // Display information about tokens and actions
+                const tokens = readTokens();
+                console.log('\nTokens and Actions:');
+                tokens.forEach((token, index) => {
+                    console.log(`${index + 1}. ${token}`);
+                });
+            } else {
+                // Check if the passkey matches the last token
+                const tokens = readTokens();
+                const lastToken = tokens[tokens.length - 1];
+                if (passkey === lastToken) {
+                    // Perform Undo operation
+                    try {
+                        execSync(`git -C ${localRepoPath} reset --hard HEAD^`, { stdio: 'inherit' });
+                        console.log('Undo successful.'.green);
+
+                        // Write a token for the undo operation
+                        const undoToken = `Undo Token: ${new Date().toLocaleString()}`;
+                        writeToken(undoToken);
+                    } catch (error) {
+                        console.error(`Error during undo: ${error.message}`.red);
+                    }
+                } else {
+                    console.log('Invalid passkey. Access denied.'.red);
+                }
             }
         } else if (key && key.ctrl && key.name === 'o') {
             const passkey = readlineSync.question('Enter passkey: ', {
@@ -104,7 +204,8 @@ async function setupAutomaticSync() {
 
             if (passkey === 'SHOWME') {
                 const logContent = readLog();
-                console.log(`\nLog:\n${logContent}`);
+                const activeUsers = getActiveUsers(logContent);
+                console.log(`\nActive Users: ${activeUsers.join(', ')}`);
             } else {
                 console.log('Invalid passkey. Access denied.'.red);
             }
