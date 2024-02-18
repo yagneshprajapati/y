@@ -48,7 +48,29 @@ async function displayMenu() {
     console.log('\n');
 }
 
+async function checkGitInstallation() {
+    try {
+        execSync('git --version', { stdio: 'ignore' });
+    } catch (error) {
+        console.error('Git is not installed. Please install Git and try again.');
+        process.exit(1);
+    }
+}
+
+async function checkGitConfig() {
+    try {
+        execSync('git config --get user.name', { stdio: 'ignore' });
+        execSync('git config --get user.email', { stdio: 'ignore' });
+    } catch (error) {
+        console.error('Git is not configured. Please configure Git with your username and email.');
+        process.exit(1);
+    }
+}
+
 async function setupAutomaticSync() {
+    await checkGitInstallation(); // Check if Git is installed
+    await checkGitConfig(); // Check if Git is configured
+
     const config = readConfig();
     const repoPath = config.repoPath || (await getRepoPath());
 
@@ -58,7 +80,7 @@ async function setupAutomaticSync() {
     // Auto pull at the first run
     try {
         execSync(`git -C ${repoPath} pull origin main`, { stdio: 'inherit' });
-        console.log('\nAuto-pull successful.');
+        console.log('\nAuto-pull successful. Your repository is up to date.');
     } catch (error) {
         console.error(`Error during auto-pull: ${error.message}`);
     }
@@ -72,13 +94,13 @@ async function setupAutomaticSync() {
 
         if (key && key.ctrl && key.name === 'c') {
             // Exit
-            console.log('Exiting...');
+            console.log('Exiting... Thank you for using the GitHub Tool.');
             process.exit();
         } else if (key && key.ctrl && key.name === 'a') {
             // Pull operation
             try {
                 execSync(`git -C ${repoPath} pull origin main`, { stdio: 'inherit' });
-                console.log('\nPull successful.');
+                console.log('\nPull successful. Your repository is now up to date.');
             } catch (error) {
                 console.error(`Error during pull: ${error.message}`);
             }
@@ -90,9 +112,9 @@ async function setupAutomaticSync() {
                 if (status.toString().trim() !== '') {
                     // There are changes, so commit and push
                     execSync(`git -C ${repoPath} add -A && git -C ${repoPath} commit -m "Automatic commit" && git -C ${repoPath} push origin main`, { stdio: 'inherit' });
-                    console.log('\nPush successful.');
+                    console.log('\nPush successful. Your changes are now on GitHub.');
                 } else {
-                    console.log('\nNo changes to push.');
+                    console.log('\nNo changes to push. Your repository is already up to date.');
                 }
             } catch (error) {
                 console.error(`Error during push: ${error.message}`);
