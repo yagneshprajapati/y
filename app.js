@@ -68,14 +68,14 @@ async function setupAutomaticSync() {
     const repoPath = config.repoPath || (await getRepoPath());
 
     console.clear();
-    console.log('GITHUB TOOL (TY PROJECT) - 2024, YAGNESH LLC\n');
+    console.log('GITHUB TOOL (TY PROJECT) - 2024 \n');
 
     console.log('Automatic sync initiated. Press Ctrl+C to exit.');
 
     keypress(process.stdin);
     process.stdin.on('keypress', async (ch, key) => {
         if (key && key.ctrl && key.name === 'c') {
-            console.log('Exiting... Thank you for using the GitHub Tool.');
+            console.log('Exiting.');
             process.exit();
         } else if (key && key.ctrl && key.name === 'a') {
             try {
@@ -89,9 +89,9 @@ async function setupAutomaticSync() {
                 const status = execSync(`git -C ${repoPath} status -s`);
                 if (status.toString().trim() !== '') {
                     execSync(`git -C ${repoPath} add -A && git -C ${repoPath} commit -m "Auto commit" && git -C ${repoPath} push origin main`, { stdio: 'ignore' });
-                    console.log('Push successful. Changes are on GitHub.');
+                    console.log('Push successful');
                 } else {
-                    console.log('No changes to push. Repository is up to date.');
+                    console.log('No changes to push');
                 }
             } catch (error) {
                 console.error(`Error during push: ${error.message}`);
